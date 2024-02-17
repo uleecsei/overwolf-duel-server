@@ -7,6 +7,9 @@ export const config = {
         port: process.env.PORT || 3000,
         mode: process.env.MODE,
     },
+    db: {
+        mongodbURI: process.env.MONGODB_URI
+    },
     discord: {
         clientId: process.env.DISCORD_CLIENT_ID,
         clientSecret: process.env.DISCORD_CLIENT_SECRET,
@@ -14,5 +17,5 @@ export const config = {
     },
     crypto: {
         encryptionKey: process.env.ENCRYPTION_KEY
-    }
+    },
 }

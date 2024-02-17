@@ -2,17 +2,17 @@ import express from 'express';
 import { config } from '../config';
 import axios from 'axios';
 import { randomUUID } from 'crypto';
+import { User } from '../models/User';
 
 const users: { [key: string]: any } = {};
 
 const router = express.Router();
 
 router.get('/discord/login', (req, res) => {
-   const sessionId = randomUUID();
-   users[sessionId] = null;
-   const url = config.server.mode === 'prod' ? `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&response_type=code&redirect_uri=https%3A%2F%2Foverwolf-duel-api-207077dd4a09.herokuapp.com%2Fauth%2Fdiscord%2Fcallback&scope=identify+connections&state=${sessionId}`
-       : `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fdiscord%2Fcallback&scope=identify+connections&state=${sessionId}`
-    res.status(200).json({ url, sessionId });
+   const url = config.server.mode === 'prod'
+       ? `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&response_type=code&redirect_uri=http%3A%2F%2F103.241.65.202%3A3000%2Fauth%2Fdiscord%2Fcallback&scope=connections+identify`
+       : `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fdiscord%2Fcallback&scope=identify+connections`
+    res.status(200).json({ url });
 });
 
 // router.get('/discord/token', async( req, res ) => {
@@ -37,23 +37,25 @@ router.get('/discord/login', (req, res) => {
 //     }
 // });
 
-router.get('/discord/user', async( req, res ) => {
-    const sessionId = req.query.sessionId;
-    const user = users[sessionId];
-
-    if (!user) {
-        res.status(400).send('User not found');
-        return;
-    }
-    const { access_token, token_type } = user;
+router.post('/discord/user', async( req, res ) => {
+    const access_token = req.body.access_token;
+    const token_type = req.body.token_type;
 
     try {
         const response = await axios.get('https://discord.com/api/users/@me',{
             headers: {
                 authorization: `${token_type} ${access_token}`
             }
-        })
-        return res.json({ user: response.data });
+        });
+        const user = response.data;
+
+        const existingUser = await User.findOne({ id: user.id, username: user.username });
+        if (!existingUser) {
+            const newUser = new User({ id: user.id, username: user.username, avatar: user.avatar });
+            await newUser.save();
+        }
+
+        return res.json({ user });
 
     } catch (error) {
         console.log('Error', error);
@@ -85,6 +87,8 @@ router.get('/discord/connections', async( req, res ) => {
         return res.send(error);
     }
 });
+
+export { router as authRouter };
 
 router.get('/discord/callback', async( req, res ) => {
 
@@ -138,4 +142,46 @@ router.get('/discord/callback', async( req, res ) => {
 
 });
 
-export { router as authRouter };
+// const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
+// const User = require('../models/User');
+//
+// // Register a new user
+// const register = async (req, res, next) => {
+//     const { username, email, password } = req.body;
+//
+//     try {
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const user = new User({ username, email, password: hashedPassword });
+//         await user.save();
+//         res.json({ message: 'Registration successful' });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+//
+// // Login with an existing user
+// const login = async (req, res, next) => {
+//     const { username, password } = req.body;
+//
+//     try {
+//         const user = await User.findOne({ username });
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+//
+//         const passwordMatch = await user.comparePassword(password);
+//         if (!passwordMatch) {
+//             return res.status(401).json({ message: 'Incorrect password' });
+//         }
+//
+//         const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+//             expiresIn: '1 hour'
+//         });
+//         res.json({ token });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+//
+// module.exports = { register, login };

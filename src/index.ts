@@ -2,8 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { config } from './config';
-import { authRouter } from './auth/authRouter';
-import { fileRouter } from './file/fileRouter';
+import { connectDB } from './db';
+import { homeRouter } from './routes/home';
+import { authRouter } from './routes/auth';
+import { fileRouter } from './routes/file';
 
 const app = express();
 
@@ -12,10 +14,14 @@ const corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
 };
+
+connectDB();
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '30mb' }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 
+app.use('/', homeRouter);
 app.use('/auth', authRouter);
 app.use('/', fileRouter);
 
