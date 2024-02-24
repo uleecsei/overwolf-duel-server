@@ -3,6 +3,7 @@ import { config } from '../config';
 import axios from 'axios';
 import { randomUUID } from 'crypto';
 import { User } from '../models/User';
+import { saveConnections } from '../utils/connections';
 
 const users: { [key: string]: any } = {};
 
@@ -38,8 +39,7 @@ router.get('/discord/login', (req, res) => {
 // });
 
 router.post('/discord/user', async( req, res ) => {
-    const access_token = req.body.access_token;
-    const token_type = req.body.token_type;
+    const { token_type, access_token } = req.body;
 
     try {
         const response = await axios.get('https://discord.com/api/users/@me',{
@@ -55,11 +55,18 @@ router.post('/discord/user', async( req, res ) => {
             await newUser.save();
         }
 
-        return res.json({ user });
+        const updatedUser =  await saveConnections(user.id, token_type, access_token);
+
+        return res.json({ user: updatedUser });
 
     } catch (error) {
-        console.log('Error', error);
-        return res.send(error);
+        if (error.response && error.response.status === 401) {
+            // Send a custom error message for Unauthorized error
+            return res.status(401).send('Unauthorized: Discord API access token invalid');
+        }
+        // For other errors, send the error details
+        console.error('Error:', error);
+        return res.status(500).send('Internal Server Error');
     }
 });
 
@@ -79,21 +86,22 @@ router.get('/discord/connections', async( req, res ) => {
                 authorization: `${token_type} ${access_token}`
             }
         });
-        console.log(response);
         return res.json({ connections: response });
 
     } catch (error) {
-        console.log('Error', error);
-        return res.send(error);
+        if (error.response && error.response.status === 401) {
+            // Send a custom error message for Unauthorized error
+            return res.status(401).send('Unauthorized: Discord API access token invalid');
+        }
+        // For other errors, send the error details
+        console.error('Error:', error);
+        return res.status(500).send('Internal Server Error');
     }
 });
-
-export { router as authRouter };
 
 router.get('/discord/callback', async( req, res ) => {
 
     const code = req.query.code;
-    const state = req.query.state;
     const params = new URLSearchParams();
 
     params.append('client_id', config.discord.clientId);
@@ -107,40 +115,15 @@ router.get('/discord/callback', async( req, res ) => {
 
     try {
         const response = await axios.post('https://discord.com/api/oauth2/token', params, { headers });
-
-        if (state) {
-            users[state] = response.data;
-        }
-
-        res.send(`
-            <html>
-              <head>
-                <title>Open Overwolf Duel App</title>
-                <style>
-                  body {
-                    font-family: 'Arial', sans-serif;
-                    text-align: center;
-                    padding: 50px;
-                  }
-            
-                  p {
-                    font-size: 24px;
-                    color: #7289DA;
-                    font-weight: bold;
-                  }
-                </style>
-              </head>
-              <body>
-                <p>Now open your Overwolf Duel app and press Continue.</p>
-              </body>
-            </html>
-        `);
+        res.redirect(`/profile?token_type=${response.data.token_type}&access_token=${response.data.access_token}`);
     } catch (error) {
         console.log('Error', error);
         return res.send(error);
     }
 
 });
+
+export { router as authRouter };
 
 // const jwt = require('jsonwebtoken');
 // const bcrypt = require('bcrypt');

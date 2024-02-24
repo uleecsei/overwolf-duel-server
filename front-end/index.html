@@ -46,34 +46,33 @@
             background-color: #5a68a3;
         }
 
-        .user-container {
-            margin-top: 20px;
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
         }
 
-        .user-greeting {
-            color: #000000;
-            font-family: 'Arial', sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
         }
 
-        pre {
-            text-align: start;
-            white-space: pre-wrap;
-        }
-
-        .user-data-container {
-            max-width: 650px;
-            max-height: 360px;
-            padding: 10px;
-            overflow: scroll;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 
 <body style="background-color:rgba(240, 7, 7, 0);">
 <div class="center-container">
+    <div id="loader" class="loader" style="display: none;"></div>
+
     <button id="discord-button" class="discord-button">
         <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord Icon" class="discord-icon">
         Sign In with Discord

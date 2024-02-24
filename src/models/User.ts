@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema(
     {
         id: String,
         username: String,
-        avatar: String
+        avatar: String,
+        connections: Array
     },
     { timestamps: true }
 );
