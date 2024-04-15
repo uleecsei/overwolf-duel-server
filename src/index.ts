@@ -13,7 +13,7 @@ import { gameDataRouter } from './routes/game-data';
 const app = express();
 
 const corsOptions = {
-  origin: config.server.url + config.server.port,
+  origin: '*',
   credentials: true,
   optionSuccessStatus: 200,
 };
