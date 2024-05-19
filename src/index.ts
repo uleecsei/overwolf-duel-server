@@ -5,10 +5,13 @@ import morgan from 'morgan';
 
 import { config } from './config';
 import { connectDB } from './db';
-import { authRouter } from './routes/auth';
-import { profileRouter } from './routes/profile';
-import { loginRouter } from './routes/login';
-import { gameDataRouter } from './routes/game-data';
+import { profileRouter } from './routes/pages/profile';
+import { loginRouter } from './routes/pages/login';
+import { gameDataRouter } from './routes/api/game-data';
+import { homeRouter } from "./routes/pages/home";
+import { registerRouter } from "./routes/pages/register";
+import { authRouter } from "./routes/api/auth";
+import { discordPageRouter } from "./routes/pages/discord";
 
 const app = express();
 
@@ -26,14 +29,13 @@ app.use(bodyParser.json({ limit: '30mb' }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(morgan(logFormat));
 
+app.use('/', homeRouter);
+app.use('/discord-page', discordPageRouter);
 app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
 app.use('/login', loginRouter);
+app.use('/register', registerRouter);
 app.use('/game-data', gameDataRouter);
-
-app.use('/', (req, res) => {
-  res.redirect('login');
-});
 // app.use('/', fileRouter);
 
 app.listen(config.server.port, () => {

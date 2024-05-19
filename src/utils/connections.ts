@@ -9,7 +9,7 @@ async function saveConnections(userId, token_type, access_token) {
             }
         });
 
-        return await User.findOneAndUpdate({id: userId}, {connections: response.data}, {new: true});
+        return await User.findOneAndUpdate({discordId: userId}, {connections: response.data}, {new: true});
     } catch (error) {
         console.error('Error saving connections:', error);
     }

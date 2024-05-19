@@ -4,7 +4,10 @@ const userSchema = new mongoose.Schema(
     {
         id: String,
         username: String,
-        avatar: String,
+        password: String,
+        email: String,
+        discordId: String,
+        discordData: Object,
         connections: Array
     },
     { timestamps: true }

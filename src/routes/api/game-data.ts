@@ -1,6 +1,5 @@
 import express from 'express';
-import { decrypt, encrypt } from '../utils/crypto';
-import { GameData } from '../models/GameData';
+import { GameData } from '../../models/GameData';
 
 const router = express.Router();
 

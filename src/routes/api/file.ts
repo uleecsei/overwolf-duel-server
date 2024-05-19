@@ -1,5 +1,5 @@
 import express from 'express';
-import { decrypt, encrypt } from '../utils/crypto';
+import { decrypt, encrypt } from '../../utils/crypto';
 import * as fs from 'fs';
 import path from 'path';
 import { readdirSync } from "fs";
