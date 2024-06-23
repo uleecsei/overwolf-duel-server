@@ -4,3 +4,5 @@ dist/
 coverage/
 .idea
 .env
+.dev-env
+.prod-env

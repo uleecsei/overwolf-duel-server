@@ -98,7 +98,7 @@ router.post('/discord/user', async( req, res ) => {
         // @ts-ignore
         if (jwtPayload.userId) {
             // @ts-ignore
-            await User.findOneAndUpdate({ _id: jwtPayload.userId }, { discordId: user.id, discordData: user }, {new: true});
+            await User.findOneAndUpdate({ _id: jwtPayload.userId }, { discordId: user.id, discordData: user, isVerified: true }, {new: true});
         }
 
         const updatedUser =  await saveConnections(user.id, token_type, access_token);

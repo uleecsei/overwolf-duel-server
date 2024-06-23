@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema(
         email: String,
         discordId: String,
         discordData: Object,
-        connections: Array
+        connections: Array,
+        isVerified: Boolean
     },
     { timestamps: true }
 );
