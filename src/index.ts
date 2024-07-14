@@ -12,6 +12,8 @@ import { homeRouter } from "./routes/pages/home";
 import { registerRouter } from "./routes/pages/register";
 import { authRouter } from "./routes/api/auth";
 import { discordPageRouter } from "./routes/pages/discord";
+import { redirectRouter } from "./routes/pages/redirect";
+import { friendsRouter } from "./routes/api/friends";
 
 const app = express();
 
@@ -30,8 +32,10 @@ app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(morgan(logFormat));
 
 app.use('/', homeRouter);
+app.use('/friends', friendsRouter);
 app.use('/discord-page', discordPageRouter);
 app.use('/auth', authRouter);
+app.use('/redirect', redirectRouter);
 app.use('/profile', profileRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);

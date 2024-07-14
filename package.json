@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc && copyfiles -u 1 'src/views/**/*' dist",
-    "prod-start": "node dist/index.js"
+    "prod-start": "node dist/index.js",
+    "watch": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "debug": "node --inspect-brk src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +32,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.10.3",
     "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.2"
   }

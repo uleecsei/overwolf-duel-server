@@ -1,11 +1,12 @@
 import express from 'express';
 import { User } from '../../models/User';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { comparePasswords } from "../../utils/compare-passwords";
 import { config } from "../../config";
 import axios from "axios";
 import { saveConnections } from "../../utils/connections";
+import { authMiddleware } from "../middleware/auth-middleware";
 
 const router = express.Router();
 
@@ -76,6 +77,11 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/user', authMiddleware, async (req, res) => {
+    const user = await User.findById(req.user._id).populate('friends', 'username email');
+    res.status(200).json({ user });
+});
+
 router.get('/discord/login', (req, res) => {
     const url = config.server.mode === 'prod'
         ? `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&response_type=code&redirect_uri=http%3A%2F%2F103.241.65.202%3A3000%2Fauth%2Fdiscord%2Fcallback&scope=connections+identify`
@@ -94,10 +100,8 @@ router.post('/discord/user', async( req, res ) => {
         });
         const user = response.data;
 
-        const jwtPayload = jwt.verify(token, config.jwt.secretKey);
-        // @ts-ignore
+        const jwtPayload = jwt.verify(token, config.jwt.secretKey) as JwtPayload;
         if (jwtPayload.userId) {
-            // @ts-ignore
             await User.findOneAndUpdate({ _id: jwtPayload.userId }, { discordId: user.id, discordData: user, isVerified: true }, {new: true});
         }
 
@@ -154,7 +158,7 @@ router.get('/discord/callback', async( req, res ) => {
 
     try {
         const response = await axios.post('https://discord.com/api/oauth2/token', params, { headers });
-        res.redirect(`/profile?token_type=${response.data.token_type}&access_token=${response.data.access_token}`);
+        res.redirect(`/redirect?token_type=${response.data.token_type}&access_token=${response.data.access_token}`);
     } catch (error) {
         console.log('Error', error);
         return res.send(error);

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirect</title>
+    <style></style>
+</head>
+<body>
+    <script>
+        const url = 'http://localhost:3000';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenType = urlParams.get('token_type');
+        const accessToken = urlParams.get('access_token');
+        const token = localStorage.getItem('token');
+        const verified = document.getElementById('verified');
+        getUser();
+
+        async function getUser() {
+            try {
+                const response = await fetch(
+                    url + `/auth/discord/user`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            token_type: tokenType,
+                            access_token: accessToken,
+                            token
+                        })
+                    },
+                );
+
+                if (response.ok) {
+                    window.location.replace('/profile');
+                } else {
+                    console.error('Error:', response.statusText);
+                    if (response.status === 401) {
+                        window.location.replace('/login');
+                    }
+                    // Reject the promise with an error message
+                    return Promise.reject(new Error(response.statusText));
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+                // Reject the promise with the caught error
+                return Promise.reject(error);
+            }
+        }
+    </script>
+</body>

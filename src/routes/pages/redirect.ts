@@ -4,7 +4,7 @@ import path from 'path';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../views/profile', 'profile.html'));
+    res.sendFile(path.join(__dirname, '../../views/redirect', 'redirect.html'));
 });
 
-export { router as profileRouter };
+export { router as redirectRouter };

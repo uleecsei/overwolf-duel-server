@@ -1,19 +1,24 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const userSchema = new mongoose.Schema(
-    {
-        id: String,
-        username: String,
-        password: String,
-        email: String,
+export interface IUser extends Document {
+        username: string;
+        email: string;
+        password: string;
+        friends: mongoose.Types.ObjectId[];
+        discordId?: string;
+        discordData?: any;
+        isVerified?: boolean;
+}
+
+const UserSchema: Schema = new Schema({
+        username: { type: String, required: true, unique: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
         discordId: String,
-        discordData: Object,
+        discordData: Schema.Types.Mixed,
         connections: Array,
         isVerified: Boolean
-    },
-    { timestamps: true }
-);
+});
 
-const User = mongoose.model('User', userSchema);
-
-export { User };
+export const User = mongoose.model<IUser>('User', UserSchema);
