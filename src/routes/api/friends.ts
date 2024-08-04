@@ -10,7 +10,14 @@ router.post('/invite', authMiddleware, async (req, res) => {
 
     try {
         const sender = req.user;
-        const recipient = await User.findOne({ username });
+
+        const recipient = await User.findOne({
+            $or: [
+                { username },
+                { email: username },
+                { 'discordData.username': username }
+            ]
+        });
 
         if (!recipient) {
             return res.status(404).json({ message: 'User not found' });

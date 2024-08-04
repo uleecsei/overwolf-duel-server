@@ -100,6 +100,11 @@ router.post('/discord/user', async( req, res ) => {
         });
         const user = response.data;
 
+        const existingUser = await User.findOne({ discordId: user.id });
+        if (existingUser) {
+            return res.status(400).send('User with this Discord ID already exists');
+        }
+
         const jwtPayload = jwt.verify(token, config.jwt.secretKey) as JwtPayload;
         if (jwtPayload.userId) {
             await User.findOneAndUpdate({ _id: jwtPayload.userId }, { discordId: user.id, discordData: user, isVerified: true }, {new: true});

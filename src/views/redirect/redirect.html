@@ -6,6 +6,8 @@
     <style></style>
 </head>
 <body>
+    <div id="error" class="error"></div>
+    <button id="discord" class="trn-button trn-button--primary" style="background: #7289da;">Link Discord</button>
     <script>
         const url = 'http://localhost:3000';
 
@@ -14,6 +16,11 @@
         const accessToken = urlParams.get('access_token');
         const token = localStorage.getItem('token');
         const verified = document.getElementById('verified');
+        const linkDiscord = document.getElementById('discord');
+        const error = document.getElementById('error');
+        linkDiscord.onclick = function () {
+            window.location.replace('/discord-page');
+        }
         getUser();
 
         async function getUser() {
@@ -39,6 +46,9 @@
                     console.error('Error:', response.statusText);
                     if (response.status === 401) {
                         window.location.replace('/login');
+                    }
+                    if (response.status === 400) {
+                        error.innerHTML = await response.text();
                     }
                     // Reject the promise with an error message
                     return Promise.reject(new Error(response.statusText));
