@@ -5,7 +5,7 @@ sendInviteButton.addEventListener('click', async () => {
     try {
         const username = usernameInput.value;
 
-        const response = await fetch(url + '/friends/invite', {
+        const response = await fetch(url + '/api/friends/invite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ sendInviteButton.addEventListener('click', async () => {
 
 async function handleAcceptInvitation(friendId) {
     try {
-        const response = await fetch(`${url}/friends/accept`, {
+        const response = await fetch(`${url}/api/friends/accept`, {
             method: 'POST', // Assuming POST method for accepting
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -55,7 +55,7 @@ async function handleAcceptInvitation(friendId) {
 
 async function handleRejectInvitation(friendId) {
     try {
-        const response = await fetch(`${url}/friends/reject`, {
+        const response = await fetch(`${url}/api/friends/reject`, {
             method: 'POST', // Assuming POST method for rejecting
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -80,7 +80,7 @@ async function handleRejectInvitation(friendId) {
 
 async function handleDeleteFriend(friendId) {
     try {
-        const response = await fetch(`${url}/friends/delete`, {
+        const response = await fetch(`${url}/api/friends/delete`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,

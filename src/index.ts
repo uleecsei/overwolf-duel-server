@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import { config } from './config';
 import { connectDB } from './db';
-import { profileRouter } from './routes/pages/profile';
+import { friendsPageRouter } from './routes/pages/friends';
 import { loginRouter } from './routes/pages/login';
 import { gameDataRouter } from './routes/api/game-data';
 import { homeRouter } from "./routes/pages/home";
@@ -14,6 +14,7 @@ import { authRouter } from "./routes/api/auth";
 import { discordPageRouter } from "./routes/pages/discord";
 import { redirectRouter } from "./routes/pages/redirect";
 import { friendsRouter } from "./routes/api/friends";
+import { profileRouter } from "./routes/pages/profile";
 
 const app = express();
 
@@ -31,15 +32,21 @@ app.use(bodyParser.json({ limit: '30mb' }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(morgan(logFormat));
 
-app.use('/', homeRouter);
-app.use('/friends', friendsRouter);
-app.use('/discord-page', discordPageRouter);
+// auth
 app.use('/auth', authRouter);
-app.use('/redirect', redirectRouter);
-app.use('/profile', profileRouter);
+
+// pages
+app.use('/', homeRouter);
 app.use('/login', loginRouter);
+app.use('/discord-page', discordPageRouter);
+app.use('/redirect', redirectRouter);
+app.use('/friends', friendsPageRouter);
+app.use('/profile', profileRouter);
 app.use('/register', registerRouter);
-app.use('/game-data', gameDataRouter);
+
+// api
+app.use('/api/friends', friendsRouter);
+app.use('/api/game-data', gameDataRouter);
 // app.use('/', fileRouter);
 
 app.listen(config.server.port, () => {

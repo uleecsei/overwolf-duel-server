@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overwolf Duel Friends</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 15px solid #333;
+            cursor: pointer;
+        }
+
+        .back-arrow:hover {
+            border-right-color: #555; /* Slightly lighter shade on hover */
+        }
+
+        .user-container {
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 24px;
+            color: #7289DA;
+            font-weight: bold;
+        }
+
+        pre {
+            text-align: start;
+            white-space: pre-wrap;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .invite-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .invite-form {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .invite-form input {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: #999;
+            margin-top: 20px;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div class="back-arrow" onclick="window.location.href = '/profile'"></div>
+
+<div class="user-container">
+    <div class="container">
+        <h1>Friends List</h1>
+        <button id="inviteButton" class="invite-button">Invite Friend</button>
+        <div id="inviteForm" class="invite-form">
+            <input type="text" id="usernameInput" placeholder="Enter username">
+            <button id="sendInvite" class="search-button">Add</button>
+        </div>
+        <table id="friendsTable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            <!-- Dynamic rows will be added here -->
+            </tbody>
+        </table>
+        <div id="noFriendsMessage" class="no-data-message">
+            You currently have no friends.
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Invitation List</h1>
+
+        <table id="invitationsTable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Receive date</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="invitationsTableBody">
+            <!-- Dynamic rows will be added here -->
+            </tbody>
+        </table>
+        <div id="noInvitationsMessage" class="no-data-message">
+            You currently have no invitations.
+        </div>
+    </div>
+</div>
+
+    <script type="text/javascript" src="friends.js"></script>
+    <script type="text/javascript" src="friends-utils.js"></script>
+</body>
+</html>

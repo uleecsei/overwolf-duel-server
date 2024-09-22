@@ -1,0 +1,155 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+}
+
+.sidebar {
+    position: absolute;
+    top: 50px;
+    right: 100px;
+    text-align: center;
+}
+
+.profile-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-icon-wrapper img {
+    display: block;
+}
+
+#verified {
+    width: 40px;
+    position: absolute;
+    right: 12px;
+    bottom: -10px;
+}
+
+p {
+    font-size: 24px;
+    color: #7289DA;
+    font-weight: bold;
+}
+
+pre {
+    text-align: start;
+    white-space: pre-wrap;
+}
+
+.name {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 16px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 0;
+    width: 150px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4a6fa5;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #3a5b8c;
+}
+
+.btn:active {
+    background-color: #2e4771;
+}
+
+.content {
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    justify-content: center;
+}
+
+.table-container {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: 45%;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Ensures headers stay above the table rows */
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.no-data-message {
+    text-align: center;
+    color: #999;
+    margin: auto;
+}
+
+.scrollable {
+    overflow-y: auto;
+    height: calc(100% - 50px);
+}
+
+.no-data {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
