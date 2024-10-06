@@ -1,4 +1,4 @@
-const url = 'http://localhost:3000';
+const url = 'http://103.241.65.202:3000';
 
 const token = localStorage.getItem('token');
 
