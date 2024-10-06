@@ -11,7 +11,7 @@ import { authMiddleware } from "../middleware/auth-middleware";
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { UserName, Email, Password, ConfirmPassword } = req.body;
+    const { UserName, Email, Password, ConfirmPassword, callbackUrl } = req.body;
 
     if (!UserName || !Email || !Password || !ConfirmPassword) {
         return res.status(400).json({ message: 'All fields are required' });
@@ -44,7 +44,12 @@ router.post('/register', async (req, res) => {
             expiresIn: '1 hour'
         });
 
-        res.json({ token });
+        if (callbackUrl) {
+            const redirectUrl = `${callbackUrl}?token=${token}`;
+            return res.json({ redirectUrl });
+        } else {
+            res.json({ token });
+        }
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).send('Internal Server Error');
@@ -53,7 +58,7 @@ router.post('/register', async (req, res) => {
 
 
 router.post('/login', async (req, res) => {
-    const { UserName, Password } = req.body;
+    const { UserName, Password, callbackUrl } = req.body;
 
     try {
         const user = await User.findOne({ username: UserName });
@@ -70,7 +75,12 @@ router.post('/login', async (req, res) => {
             expiresIn: '1 hour'
         });
 
-        res.json({ token });
+        if (callbackUrl) {
+            const redirectUrl = `${callbackUrl}?token=${token}`;
+            return res.json({ redirectUrl });
+        } else {
+            res.json({ token });
+        }
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).send('Internal Server Error');
@@ -78,8 +88,20 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/user', authMiddleware, async (req, res) => {
-    const user = await User.findById(req.user._id).populate('friends', 'username email');
-    res.status(200).json({ user });
+    try {
+        const user = await User.findById(req.user._id)
+            .populate('friends', 'username email')
+            .populate('gameData');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 router.get('/discord/login', (req, res) => {

@@ -63,6 +63,41 @@ async function getUser() {
     }
 }
 
+async function populateLastGamesTable(user) {
+    try {
+        const lastGamesTableBody = document.getElementById('lastGamesTableBody');
+        const noLastGamesMessage = document.getElementById('noLastGamesMessage');
+
+        const gameData = user.gameData;
+
+        lastGamesTableBody.innerHTML = '';
+
+        if (gameData && gameData.length > 0) {
+            gameData.forEach((game) => {
+                console.log(game);
+                const gameName = game.data.fileName || 'Unknown Game';
+                const date = new Date(game.createdAt).toLocaleString();
+                const result = game.data.events.find(event => event.name === 'goal') || { data: '' };
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${gameName}</td>
+                    <td>${date}</td>
+                    <td>${result.data}</td>
+                `;
+
+                lastGamesTableBody.appendChild(row);
+            });
+
+            noLastGamesMessage.style.display = 'none';
+        } else {
+            noLastGamesMessage.style.display = 'flex';
+        }
+    } catch (error) {
+        console.error('Error populating last games table:', error);
+    }
+}
+
 async function viewChange() {
     try {
         const userData = await getUser();
@@ -74,6 +109,7 @@ async function viewChange() {
         if (user.discordData) {
             discordUsername.innerHTML = user.discordData.username;
         }
+        return user;
     }
     catch (e) {
         console.log(e);
@@ -82,5 +118,6 @@ async function viewChange() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    await viewChange();
+    const user = await viewChange();
+    await populateLastGamesTable(user);
 });

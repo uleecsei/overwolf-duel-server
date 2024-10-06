@@ -11,6 +11,11 @@ document.getElementById('form').addEventListener('submit', async function(event)
     });
 
     try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const callbackUrl = urlParams.get('callbackUrl');
+        if (callbackUrl) {
+            data.callbackUrl = callbackUrl;
+        }
         const response = await fetch('/auth/login', {
             method: 'POST',
             headers: {
@@ -21,8 +26,12 @@ document.getElementById('form').addEventListener('submit', async function(event)
 
         if (response.status === 200) {
             const responseData = await response.json();
-            localStorage.setItem('token', responseData.token);
-            location.href = '/discord-page';
+            if (responseData.redirectUrl) {
+                location.href = responseData.redirectUrl;
+            } else {
+                localStorage.setItem('token', responseData.token);
+                location.href = '/discord-page';
+            }
         } else {
             const result = await response.json();
             alert(result.message);
@@ -31,3 +40,32 @@ document.getElementById('form').addEventListener('submit', async function(event)
         console.error('Error:', error);
     }
 });
+
+function registerLinkCallback(event) {
+    event.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const callbackUrl = urlParams.get('callbackUrl');
+    if (callbackUrl) {
+        window.location.href = `/register?callbackUrl=${callbackUrl}`;
+    } else {
+        window.location.href = '/register';
+    }
+
+}
+
+document.getElementById('register-link1').addEventListener('click', registerLinkCallback);
+document.getElementById('register-link2').addEventListener('click', registerLinkCallback);
+
+function loginLinkCallback(event) {
+    event.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const callbackUrl = urlParams.get('callbackUrl');
+    if (callbackUrl) {
+        window.location.href = `/login?callbackUrl=${callbackUrl}`;
+    } else {
+        window.location.href = '/login';
+    }
+
+}
+
+document.getElementById('login-link').addEventListener('click', registerLinkCallback);

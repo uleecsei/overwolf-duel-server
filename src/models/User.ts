@@ -5,6 +5,7 @@ export interface IUser extends Document {
         email: string;
         password: string;
         friends: mongoose.Types.ObjectId[];
+        gameData: mongoose.Types.ObjectId[];
         discordId?: string;
         discordData?: any;
         isVerified?: boolean;
@@ -15,6 +16,7 @@ const UserSchema: Schema = new Schema({
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        gameData: [{ type: mongoose.Types.ObjectId, ref: 'GameData' }],
         discordId: String,
         discordData: Schema.Types.Mixed,
         connections: Array,
